@@ -26,7 +26,7 @@ SECRET_KEY = 'qyuj48b8_@z4f96=u*2w2&q2jouklpww319^6bp&h@v317bdc!'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'youtubedownloader254.herokuapp.com']
+ALLOWED_HOSTS = ['youtubedownloader254.herokuapp.com']
 
 
 # Application definition
