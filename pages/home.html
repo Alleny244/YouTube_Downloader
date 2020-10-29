@@ -1,0 +1,157 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=<device-width>, initial-scale=1.0">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+    <script src="{% static 'jss.js' %}"></script> 
+    <link rel="stylesheet" href="{% static 'node_modules/bootstrap/dist/css/bootstrap.min.css' %}" />
+ 
+    <link
+    rel="icon"
+    href="https://www.flaticon.com/svg/static/icons/svg/725/725300.svg"
+  />   
+  <link rel="stylesheet" href="{% static 'style.css' %}" />
+  <link  rel="stylesheet" href="{% static 'node_modules/font-awesome/css/font-awesome.min.css' %}">
+  <link rel="stylesheet" href="{% static 'node_modules/bootstrap-social/bootstrap-social.css'%}">
+    <title>Youtube Downloader</title>
+</head>
+<body>
+    <div class="loader_bg">
+        <div class="loader"></div>
+    </div>
+    
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-dark btn btn-light ">
+        <a class="navbar-brand text-light px-3 active"  href="#"> <img src="https://www.flaticon.com/svg/static/icons/svg/725/725300.svg" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+            YouTube Downloader</a>
+        <button class="navbar-toggler btn btn-light" type="button" data-toggle="collapse" data-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon btn btn-light"></span>
+        </button>
+        <div class="collapse navbar-collapse " id="navbarText">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item"  >
+              <a class="nav-link text-light px-3"  data-toggle="tooltip" data-placement="top" title="About"  href="#About"><i class="fa fa-home"></i> About <span class="sr-only">(current)</span></a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light px-5"  data-toggle="tooltip" data-placement="top" title="Download" href="#ab" id="b"><i class="fa fa-download"></i> Download</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link text-light px-3 white-lighter-hover " data-toggle="tooltip" data-placement="top" title="Contact" href="#Contact" id="c"><i class="fa fa-phone-square"></i> Contact</a>
+            </li>
+          </ul>
+          <span class="navbar-text text-white">
+            
+          </span>
+        </div>
+      </nav>
+    </div>  
+      <div class="container-fluid ">
+        <div class="row row-cols-2">
+            <div class="col-12 col-sm-8 ">
+        <img src="{% static 'gif.gif'%}" class="rounded float-left  img-fluid mt-1 w-75  " alt="How to copy url" title="How to copy video url">
+      </div>
+
+<div class="ml-3 card  mt-4" >
+
+    <h5 class="card-header bg-info px-1">
+      <strong><i class="fa fa-download"></i> Download</strong>
+    </h5>
+  
+    <!--Card content-->
+    <div class="card-body  "style="max-width: 18rem;">
+  
+      <!-- Form -->
+      <form class="text-center " style="color: #757575;" id="ab"  action="lint" method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="exampleInputEmail1"></label>
+            <input name="url" type="url" required class="form-control" id="exampleInputEmail1" aria-describedby="emailHelp" autocomplete="off">
+            <small id="emailHelp" class="form-text text-muted">Enter your url here</small>
+          </div>
+          
+          <button class="btn btn-outline-info btn-rounded btn-block my-4 waves-effect z-depth-0" type="submit">Download</button>
+         </Form>
+      </div>
+      </div>
+      
+</div>
+
+  <div class="container mt-5 "></div>
+     
+  <div class="card-deck">
+    <div class="card">
+        <img
+        rel="icon"
+        src="https://cdn3.iconfinder.com/data/icons/documentation-blue-red/61/037_-_Copy_Document-128.png"
+      />   
+      <div class="card-body">
+        <h5 class="card-title">Copy YouTube URL</h5>
+        <p class="card-text">Copy your video URL from YouTube that you need to download. You can use Ctrl+C or with the context menu.</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">Last updated 3 mins ago</small>
+      </div>
+    </div>
+    <div class="card">
+      <img   rel="icon" src="https://cdn3.iconfinder.com/data/icons/flat-common-1/32/paste-next-2-128.png"  alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Paste in search field</h5>
+        <p class="card-text">Paste YouTube video URL in the search field and click 'Search'. Use Ctrl+V.</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">Last updated 3 mins ago</small>
+      </div>
+    </div>
+    <div class="card">
+      <img src="https://media.istockphoto.com/vectors/smartphone-with-download-button-on-screen-vector-icon-vector-id911329146?b=1&k=6&m=911329146&s=170x170&h=ZDZYvFibkw9HFLFqpl80KIaFjWlAyMY6cjTRl1uRS08="  alt="...">
+      <div class="card-body">
+        <h5 class="card-title">Download Video</h5>
+        <p class="card-text">You will get a list of files for download, video, and audio. Click the 'Download' button to start downloading the file.</p>
+      </div>
+      <div class="card-footer">
+        <small class="text-muted">Last updated 3 mins ago</small>
+      </div>
+    </div>
+  </div> 
+             
+
+</div> 
+<div class="container">
+    <div class="row">
+    <div class="mt-5 col-12 col-sm-12"><h1 class='text-center' id='About'>About</h1></div>
+    <div class='bg-light mt-5 col-12 col-sm-12 ml-0'><p  class="text-justify ml-1" >It is often necessary to download a video from YouTube to a computer to watch it without the Internet during travel, classes, or flights. YouTube provides the ability to save a video in a mobile application, but there is no such function for a computer. Our youtube video downloader allows you to download and save videos to any storage, from where you can play them in the future.
+
+        Youtube Downloader download youtube videos and more! You can also save video from Facebook, Instagram, Coub, Twitter, TikTok, and many other services. Simply enter the video URL in the downloader input field to load it at maximum speed!
+    </p>
+        </div>
+    </div>
+</div>
+<div class='text-center mt-5' id="Contact">
+    <nav class="navbar navbar-expand-md navbar-light bg-dark">
+        <a href="#" class="navbar-brand text-white">© 2020 YouTube Downloader</a>
+       
+        
+         <div id="x">
+                
+                <a href="https://github.com/Alleny244" class="nav-item nav-link  text-light"  id="y"><p>Web Designer</p> <i class="fa fa-github"></i><p>Allen.Y</p></a>
+            </div>  
+            
+        </div>
+    </nav>
+    </div>
+    <script src="{% static 'node_modules/jquery/dist/jquery.slim.min.js'%}"></script>
+    <script src="{% static 'node_modules/popper.js/dist/umd/popper.min.js' %}"></script>
+    <script src="{% static 'node_modules/bootstrap/dist/js/bootstrap.min.js' %}"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script>
+        setTimeout(function(){
+            $('.loader_bg').fadeToggle();
+        },4000);
+    </script>
+</div>
+</body>
+</html>
