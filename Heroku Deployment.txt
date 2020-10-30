@@ -1,0 +1,238 @@
+Heroku is a cloud application platform that provides hosting services for multiple programming languages, including Python. It is basically a Platform-as-a-Service (PaaS) cloud infrastructure. You can read more about Heroku here. Of course, you need an account, so sign up here.
+
+Audience & Assumption
+This post is basically targeting existing Python/Django developers and assumes you have a basic understanding of Python, Django and Virtual Environment. You can follow along, however, as we will be building a basic Django application in the process. Alternatively, you may pause right here and take quick dive into Python and Django.
+
+Creating a Django Project
+Virtual Environment
+Using Virtual environments allows you to avoid installing Python packages globally and run multiple instances of web applications on different versions of Python and Django, on a single machine. It is a containerized way to manage application dependencies for specific use (app) cases. Here is a guide on how to install Virtualenv.
+
+Before we start, we need to create a virtualenv for our app, so open up your Command Prompt (for Windows) or Terminal (for Mac, Linux) and type the following:
+
+$ virtualenv django_env
+ 
+django_env is the name of the environment to be created. You can use any name of your choice. However, it helps to append the '_env' to make it more obvious.
+
+Activate (start) the virtual environment
+
+$ source django_env/bin/activate
+Install Django in the newly created environment, using pip
+
+(django_env):~$ pip install django
+ 
+This will install the latest version of Django.
+
+Create The Project
+(django_env):~$ django-admin.py startproject djangoherokuapp
+This creates a Django project with the name djangoherokuapp in the specfied directory. The djangoherokuapp project folder structure is as shown below.
+
+djangoherokuapp
+  |-- djangoherokuapp/
+    |	  |---  __init_-.py
+    |     |---  settings.py
+    |     |---  urls.py
+    |     |---  wsgi.py
+    |-- manage.py
+Create The App
+(django_env):~/Desktop$  cd djangoherokuapp
+(django_env):~/Desktop/djangoherokuapp$  python manage.py startapp herokuapp
+This changes the directory into the newly created project's directory and creates a new app, herokuapp. You can create as many apps as needed using the manage.py startapp command. The new project directory structure is as shown below.
+
+djangoherokuapp
+  |-- djangoherokuapp/
+    |	  |---  __init_-.py
+    |     |---  settings.py
+    |     |---  urls.py
+    |     |---  wsgi.py
+    |----- manage.py
+    |----- herokuapp/
+    |     |---  admin.py
+    |     |---  apps.py
+    |     |---  __init__.py
+    |     |---  models.py
+    |     |---  tests.py
+    |     |---  views.py
+Add 'herokuapp' to installed apps in settings.py
+INSTALLED_APPS = [
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'herokuapp',
+]
+Migrate the database and start the development server to see what we have so far.
+
+(django_env):~/Desktop/djangoherokuapp$  python manage.py migrate
+DB migration Output
+
+Operations to perform:
+  Apply all migrations: admin, auth, contenttypes, sessions
+Running migrations:
+  Applying contenttypes.0001_initial... OK
+  Applying auth.0001_initial... OK
+  Applying admin.0001_initial... OK
+  Applying admin.0002_logentry_remove_auto_add... OK
+  Applying contenttypes.0002_remove_content_type_name... OK
+  Applying auth.0002_alter_permission_name_max_length... OK
+  Applying auth.0003_alter_user_email_max_length... OK
+  Applying auth.0004_alter_user_username_opts... OK
+  Applying auth.0005_alter_user_last_login_null... OK
+  Applying auth.0006_require_contenttypes_0002... OK
+  Applying auth.0007_alter_validators_add_error_messages... OK
+  Applying auth.0008_alter_user_username_max_length... OK
+  Applying sessions.0001_initial... OK
+(django_env):~/Desktop/djangoherokuapp$ 
+Start the development server.
+
+(django_env):~/Desktop/djangoherokuapp$ python manage.py runserver
+Output
+
+Performing system checks...
+
+System check identified no issues (0 silenced).
+November 15, 2017 - 07:18:31
+Django version 1.11.7, using settings 'djangoherokuapp.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+Visit http://127.0.0.1:8000/ on the browser. If your setup is correct, you should see the Django welcome page.
+localhost.png
+
+Deploy App to Heroku
+Install Heroku CLI (Heroku Toolbelt)
+Heroku provides an easy-to-use command line interface called Heroku Toolbelt. It is a command line tool to manage your Heroku apps. You'll find installation guides on the Heroku Toolbelt page.
+
+After the installation, open a terminal and log into your Heroku account using the credentials you signed up with.
+
+(django_env):~/Desktop/djangoherokuapp$ heroku login
+Enter your Heroku credentials:
+Email: your_email@emailprovider.com
+Password: *********
+Logged in as jameseze.ca@gmail.com
+(django_env):~/Desktop/djangoherokuapp$ 
+Preparing The App for Deployment
+Before deploying the app we just built to Heroku, we need to add a few configuration files and install some packages to run our app in the production environment.
+
+Heroku stores your app in a remote Git repository in the Heroku cloud.
+
+Add a Procfile in the project root directory to define process types and explicitly declare what command should be executed to start your app.
+(django_env):~/Desktop/djangoherokuapp$ touch Procfile
+Open the Procfile and add the line below.
+
+web: gunicorn djangoherokuapp.wsgi --log-file -
+ 
+Change djangoherokuapp to the name of your project to point to the location of the wsgi.py file.
+
+Add a runtime.txt file in the project root directory and specify the correct Python version.
+Open the runtime.txt file and add the following line, or as applicable, to your application.
+
+python-2.7.12
+Install the following packages in the environment (See why we need the packages).
+(django_env):~/Desktop/djangoherokuapp$ pip install gunicorn dj-database-url whitenoise psycopg2
+Add a requirements.txt file
+(django_env):~/Desktop/djangoherokuapp$ pip freeze > requirements.txt
+ 
+Heroku will recognize a deployed application as a Python application only if it has a requirements.txt file in the root directory. Even if your application has no module dependencies, it should include an empty requirements.txt file to indicate that your app has no dependencies.
+
+Your requirements.txt file should look like this.
+
+dj-database-url==0.4.2
+Django==1.11.7
+gunicorn==19.7.1
+psycopg2==2.7.3.2
+pytz==2017.3
+whitenoise==3.3.1
+Set Up the Static Assets
+Open up settings.py file and make the following changes, preferably at the bottom of the file.
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.11/howto/static-files/
+PROJECT_ROOT   =   os.path.join(os.path.abspath(__file__))
+STATIC_ROOT  =   os.path.join(PROJECT_ROOT, 'staticfiles')
+STATIC_URL = '/static/'
+
+# Extra lookup directories for collectstatic to find static files
+STATICFILES_DIRS = (
+    os.path.join(PROJECT_ROOT, 'static'),
+)
+
+#  Add configuration for static files storage using whitenoise
+STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+ 
+Heroku recommends the use of WhiteNoise (a Django package) to serve static files in production, since Django does not support serving static files in production, by default.
+
+Add whitenoise middleware at the top of the middleware list in settings.py
+
+MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
+    'django.middleware.security.SecurityMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+]
+Update Database Configuration in settings.py (at the bottom of the file)
+import dj_database_url 
+prod_db  =  dj_database_url.config(conn_max_age=500)
+DATABASES['default'].update(prod_db)
+Create App in Heroku from terminal
+(django_env):~/Desktop/djangoherokuapp$ heroku create herokudjangoapp
+Creating ⬢ herokudjangoapp... done
+https://herokudjangoapp.herokuapp.com/ | https://git.heroku.com/herokudjangoapp.git
+ 
+Choose any name for your app. Heroku will inform you if the name already exists
+
+Add your app domain name to ALLOWED_HOSTS in settings.py.
+
+ALLOWED_HOSTS = ['herokudjangoapp.herokuapp.com']
+Initialize Git and connect your new app (or existing one) to Heroku Git remote repository.
+
+(django_env):~/Desktop/djangoherokuapp$ git init
+Initialized empty Git repository in /home/hypermatrix/Desktop/djangoherokuapp/.git/
+(django_env):~/Desktop/djangoherokuapp$ 
+ 
+(django_env):~/Desktop/djangoherokuapp$ heroku git:remote -a herokudjangoapp
+set git remote heroku to https://git.heroku.com/herokudjangoapp.git
+(django_env):~/Desktop/djangoherokuapp$
+Add files to the staging area and commit changes.
+
+(django_env):~/Desktop/djangoherokuapp$ git add .
+(django_env):~/Desktop/djangoherokuapp$ git commit -m "Initial commit"
+Push the project to the remote repository (deploy app to Heroku)
+
+(django_env):~/Desktop/djangoherokuapp$ git push heroku master
+ 
+If you get an error message with collectstatic, simply disable it by instructing Heroku to ignore running the manage.py collecstatic command during the deployment process.
+
+ 
+(django_env):~/Desktop/djangoherokuapp$ heroku config:set     DISABLE_COLLECTSTATIC=1  
+Setting DISABLE_COLLECTSTATIC and restarting ⬢ herokudjangoapp... done, v3  
+DISABLE_COLLECSTATIC: 1
+Then, rerun
+
+(django_env):~/Desktop/djangoherokuapp$ git push heroku master
+Output
+
+Counting objects: 26, done.
+Delta compression using up to 4 threads.
+Compressing objects: 100% (20/20), done.
+Writing objects: 100% (26/26), 31.14 KiB | 0 bytes/s, done.
+Total 26 (delta 1), reused 0 (delta 0)
+remote: Compressing source files... done.
+remote: Building source:
+.....
+
+remote: -----> Launching...
+remote:        Released v7
+remote:        https://herokudjangoapp.herokuapp.com/ deployed to Heroku
+remote: 
+remote: Verifying deploy... done.
+To https://git.heroku.com/herokudjangoapp.git
+[new branch]      master -> master
+Migrate the database
+
+(django_env):~/Desktop/djangoherokuapp$ heroku run python manage.py migrate
+At this stage, you can visit yourappname.herokuapp.com. If all went well, you should see a success message. Mine is shown below
